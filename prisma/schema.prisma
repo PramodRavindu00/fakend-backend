@@ -7,7 +7,53 @@ datasource db {
 }
 
 model Project {
-  id        String   @id @default(uuid()) @db.Uuid
-  title     String
-  createdAt DateTime @default(now())
+  id             String        @id @default(uuid()) @db.Uuid
+  title          String
+  secretHash     String
+  ownerId        String?
+  status         ProjectStatus @default(Active)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  lastAccessedAt DateTime      @default(now())
+  deletedAt      DateTime?
+
+  routes Route[]
+}
+
+model Route {
+  id          String     @id @default(uuid()) @db.Uuid
+  method      HttpMethod
+  path        String
+  projectId   String     @db.Uuid
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  project   Project         @relation(fields: [projectId], references: [id])
+  responses RouteResponse[]
+}
+
+model RouteResponse {
+  id         String   @id @default(uuid()) @db.Uuid
+  routeId    String   @db.Uuid
+  scenario   String
+  statusCode Int
+  body       Json
+  createdAt  DateTime @default(now())
+
+  Route Route @relation(fields: [routeId], references: [id])
+}
+
+enum ProjectStatus {
+  Active
+  Inactive
+  Deleted
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
 }
