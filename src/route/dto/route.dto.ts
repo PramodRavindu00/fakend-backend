@@ -6,6 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 import { HttpMethod } from '@prisma/client';
+import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateRouteDto {
   @IsOptional()
@@ -27,3 +28,5 @@ export class CreateRouteDto {
   @IsString()
   description?: string;
 }
+
+export class UpdateRouteDto extends PartialType(CreateRouteDto) {}

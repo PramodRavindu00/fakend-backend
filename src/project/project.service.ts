@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProjectDto } from './dto/project.dto';
+import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { randomBytes } from 'crypto';
@@ -24,9 +24,18 @@ export class ProjectService {
 
     return newProject.id;
   }
+
+  async update(id: string, dto: UpdateProjectDto) {
+    await this.prisma.project.update({
+      where: { id },
+      data: {
+        ...dto,
+      },
+    });
+  }
+
   async findAll() {}
   async findOne() {}
-  async update() {}
   async delete() {}
 
   async createAuto(tx: Prisma.TransactionClient): Promise<string> {
