@@ -23,15 +23,15 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       if (exception.code === 'P2002') {
         return response.status(HttpStatus.CONFLICT).json({
           statusCode: 409,
-          message: 'Internal server error',
-          error: 'Internal Server Error',
+          message: 'Record already exists',
+          error: 'Conflict',
         });
       }
       if (exception.code === 'P2003') {
         return response.status(HttpStatus.BAD_REQUEST).json({
           statusCode: 400,
-          message: 'Internal server error',
-          error: 'Internal Server Error',
+          message: 'Related record does not exist',
+          error: 'Bad Request',
         });
       }
       return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

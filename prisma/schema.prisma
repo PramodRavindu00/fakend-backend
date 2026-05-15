@@ -9,7 +9,7 @@ datasource db {
 model Project {
   id             String        @id @default(uuid()) @db.Uuid
   title          String
-  secretHash     String
+  secretHash     String        @unique
   ownerId        String?
   status         ProjectStatus @default(Active)
   createdAt      DateTime      @default(now())

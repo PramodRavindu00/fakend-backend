@@ -2,25 +2,40 @@ import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/project.dto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { randomIdrandomUUID } from 'crypto';
+import { randomBytes } from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ProjectService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(dto: CreateProjectDto, tx?: Prisma.TransactionClient) {
+
+  async create(
+    dto: CreateProjectDto,
+    tx?: Prisma.TransactionClient,
+  ): Promise<string> {
     const dbConn = tx ? tx : this.prisma;
-    await dbConn.project.create({
-      data: { ...dto, secretHash: '' },
+    const newProject = await dbConn.project.create({
+      data: {
+        ...dto,
+        secretHash: await this.generateProjectSecret(),
+        ownerId: '',
+      },
     });
+
+    return newProject.id;
   }
   async findAll() {}
   async findOne() {}
   async update() {}
   async delete() {}
 
-  async createAuto(tx: Prisma.TransactionClient) {
-    const randomId = randomIdrandomUUID();
-    const title = `Project-${randomId}`;
-    await this.create({ title }, tx);
+  async createAuto(tx: Prisma.TransactionClient): Promise<string> {
+    const title = `Project-${randomBytes(8).toString('hex')}`;
+    return await this.create({ title }, tx);
+  }
+
+  private async generateProjectSecret(): Promise<string> {
+    const projectSecret = randomBytes(32).toString('hex');
+    return await bcrypt.hash(projectSecret, 10);
   }
 }
