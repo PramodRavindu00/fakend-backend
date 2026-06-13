@@ -7,6 +7,9 @@ import { AppController } from './app.controller';
 import { ProjectModule } from './project/project.module';
 import { RouteModule } from './route/route.module';
 import { RouteResponseModule } from './route-response/route-response.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { OauthModule } from './oauth/oauth.module';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { RouteResponseModule } from './route-response/route-response.module';
     ProjectModule,
     RouteModule,
     RouteResponseModule,
+    AuthModule,
+    OauthModule,
+    UserModule,
   ],
   controllers: [AppController],
 })

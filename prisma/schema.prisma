@@ -6,11 +6,34 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  name      String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userProviders UserProvider[]
+}
+
+model UserProvider {
+  id             String   @id @default(uuid()) @db.Uuid
+  provider       Provider
+  providerUserId String
+  createdAt      DateTime @default(now())
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerUserId])
+}
+
 model Project {
   id             String        @id @default(uuid()) @db.Uuid
   title          String
   secretHash     String        @unique
-  ownerId        String?
+  ownerId        String?       @db.Uuid
   status         ProjectStatus @default(Active)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -48,6 +71,11 @@ model RouteResponse {
 
   @@unique([routeId, scenario])
   @@index([routeId])
+}
+
+enum Provider {
+  Google
+  Github
 }
 
 enum ProjectStatus {
