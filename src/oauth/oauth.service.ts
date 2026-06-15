@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class OauthService {
@@ -19,6 +19,6 @@ export class OauthService {
   getGithubAuthUrl() {}
 
   async handleGoogleLogin(code: string) {
-    console.log('google auth code : ', code);
+    if (!code) throw new BadRequestException('Google Auth Code Not Found');
   }
 }

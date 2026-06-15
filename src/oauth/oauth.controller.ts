@@ -1,5 +1,13 @@
-import { Controller, Get, Post, Query, Redirect } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Redirect,
+  UseGuards,
+} from '@nestjs/common';
 import { OauthService } from './oauth.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('oauth')
 export class OauthController {
@@ -15,7 +23,8 @@ export class OauthController {
   github() {}
 
   @Get('/google/callback')
-  googleCallback(@Query() code: string) {
+  @UseGuards(AuthGuard('google'))
+  googleCallback(@Query('code') code: string) {
     return this.oauthService.handleGoogleLogin(code);
   }
 

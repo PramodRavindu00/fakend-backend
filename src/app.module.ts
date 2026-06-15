@@ -27,5 +27,6 @@ import { OauthModule } from './oauth/oauth.module';
     UserModule,
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}
