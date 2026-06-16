@@ -31,6 +31,7 @@ export class AuthController {
   github() {}
 
   @Get('/oauth/github/callback')
+  @UseGuards(AuthGuard('github'))
   githubCallback(@OauthUser() oauthUser: OAuthUserType) {
     return this.authService.oAuthLogin(oauthUser);
   }
