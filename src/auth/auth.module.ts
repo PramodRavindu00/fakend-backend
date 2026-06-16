@@ -9,7 +9,7 @@ import { GithubStrategy } from './passport-strategy/github-strategy';
 
 @Module({
   imports: [UserModule, PassportModule],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, GithubStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
