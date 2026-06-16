@@ -19,6 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload): Promise<CurrentUserType> {
+    //check user is actually existing in the database
+    // this will prevent stale tokens access endpoints
     const user = await this.userService.getUserById(payload.sub);
     if (!user) {
       throw new UnauthorizedException('User not Found');

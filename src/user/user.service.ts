@@ -17,6 +17,7 @@ export class UserService {
         userProviders: {
           select: {
             provider: true,
+            providerUserId: true,
           },
         },
       },
@@ -40,22 +41,26 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto) {
-    await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const newUser = await tx.user.create({
-        data: {
-          email: dto.email,
-          name: dto.name,
-          avatarUrl: dto.email,
-        },
-      });
+    return await this.prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const newUser = await tx.user.create({
+          data: {
+            email: dto.email,
+            name: dto.name,
+            avatarUrl: dto.email,
+          },
+        });
 
-      await tx.userProvider.create({
-        data: {
-          userId: newUser.id,
-          provider: dto.provider,
-          providerUserId: dto.providerUserId,
-        },
-      });
-    });
+        //create the provider record
+        await tx.userProvider.create({
+          data: {
+            userId: newUser.id,
+            provider: dto.provider,
+            providerUserId: dto.providerUserId,
+          },
+        });
+        return newUser;
+      },
+    );
   }
 }

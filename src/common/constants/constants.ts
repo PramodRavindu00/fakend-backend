@@ -14,6 +14,11 @@ export class CurrentUserType {
   name: string;
 }
 
+export interface OAuthLoginResult {
+  refreshToken: string;
+  redirectUrl: string;
+}
+
 export interface JwtPayload {
   sub: string;
   email: string;
