@@ -1,5 +1,7 @@
 import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { OAuthUserType } from 'src/common/constants/constants';
+import { OauthUser } from 'src/common/decorators/oauthUser.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -18,12 +20,12 @@ export class AuthController {
 
   @Get('/oauth/google/callback')
   @UseGuards(AuthGuard('google'))
-  googleCallback() {}
+  googleCallback(@OauthUser() oauthUser: OAuthUserType) {}
 
   @Get('/oauth/github')
   @UseGuards(AuthGuard('github'))
   github() {}
 
   @Get('/oauth/github/callback')
-  githubCallback() {}
+  githubCallback(@OauthUser() oauthUser: OAuthUserType) {}
 }

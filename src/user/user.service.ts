@@ -8,8 +8,24 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUserByEmail(email: string) {
-    return await this.prisma.user.findMany({
+    return await this.prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        userProviders: {
+          select: {
+            provider: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getUserById(id: string) {
+    return await this.prisma.user.findUnique({
+      where: { id },
       select: {
         id: true,
         email: true,
