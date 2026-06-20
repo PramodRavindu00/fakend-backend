@@ -9,10 +9,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { OAuthUserType } from 'src/common/constants/constants';
+import { CurrentUserType, OAuthUserType } from 'src/common/constants/constants';
 import { OauthUser } from 'src/common/decorators/oauthUser.decorator';
 import { AuthService } from './auth.service';
 import { OAuthResultInterceptor } from 'src/common/interceptors/oauth-result.interceptor';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +28,9 @@ export class AuthController {
 
   @Post('/me')
   @HttpCode(HttpStatus.OK)
-  me() {}
+  me(@CurrentUser() user: CurrentUserType) {
+    return this.authService.getLoggedUser(user);
+  }
 
   @Get('/oauth/google')
   @HttpCode(HttpStatus.OK)

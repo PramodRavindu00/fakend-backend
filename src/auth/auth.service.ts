@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Provider } from '@prisma/client';
 import {
+  CurrentUserType,
   JwtPayload,
   OAuthLoginResult,
   OAuthUserType,
@@ -71,6 +72,10 @@ export class AuthService {
       redirectUrl: redirectUrl.toString(),
       refreshToken,
     };
+  }
+
+  getLoggedUser(user: CurrentUserType) {
+    return user;
   }
 
   private async linkOAuthProvider(
