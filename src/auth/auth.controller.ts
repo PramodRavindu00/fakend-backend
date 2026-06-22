@@ -16,6 +16,7 @@ import { OAuthResultInterceptor } from 'src/common/interceptors/oauth-result.int
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { GoogleOAuthCallbackGuard } from 'src/common/guards/google-oauth-callback.guard';
 import { GithubOAuthCallbackGuard } from 'src/common/guards/github-oauth-callback.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -25,11 +26,13 @@ export class AuthController {
   refresh() {}
 
   @Post('/logout')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   logout() {}
 
   @Post('/me')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
   me(@CurrentUser() user: CurrentUserType) {
     return this.authService.getLoggedUser(user);
   }
