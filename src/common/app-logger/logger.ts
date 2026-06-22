@@ -3,7 +3,7 @@ import { Params } from 'nestjs-pino';
 
 // base config for plain logger usage
 export const pinoConfig: LoggerOptions = {
-  level: 'info',
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   transport: {
     target: 'pino-pretty',
     options: {
@@ -20,6 +20,10 @@ export const pinoConfig: LoggerOptions = {
 export const pinoHttpConfig: Params = {
   pinoHttp: {
     ...pinoConfig,
+    redact: {
+      paths: ['req.headers.authorization', 'req.headers.cookie'],
+      remove: true,
+    },
     customLogLevel: (_req, res, err) => {
       if (res.statusCode >= 400 || err) return 'error';
       return 'info';

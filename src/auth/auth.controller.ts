@@ -14,6 +14,8 @@ import { OauthUser } from 'src/common/decorators/oauthUser.decorator';
 import { AuthService } from './auth.service';
 import { OAuthResultInterceptor } from 'src/common/interceptors/oauth-result.interceptor';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { GoogleOAuthCallbackGuard } from 'src/common/guards/google-oauth-callback.guard';
+import { GithubOAuthCallbackGuard } from 'src/common/guards/github-oauth-callback.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -38,7 +40,7 @@ export class AuthController {
   google() {}
 
   @Get('/oauth/google/callback')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleOAuthCallbackGuard)
   @UseInterceptors(OAuthResultInterceptor)
   @Redirect()
   googleCallback(@OauthUser() oauthUser: OAuthUserType) {
@@ -51,7 +53,7 @@ export class AuthController {
   github() {}
 
   @Get('/oauth/github/callback')
-  @UseGuards(AuthGuard('github'))
+  @UseGuards(GithubOAuthCallbackGuard)
   @UseInterceptors(OAuthResultInterceptor)
   @Redirect()
   githubCallback(@OauthUser() oauthUser: OAuthUserType) {

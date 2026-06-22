@@ -16,7 +16,7 @@ export class CurrentUserType {
 }
 
 export interface OAuthLoginResult {
-  refreshToken: string;
+  refreshToken?: string;
   redirectUrl: string;
 }
 

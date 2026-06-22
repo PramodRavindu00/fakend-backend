@@ -22,14 +22,17 @@ export class OAuthResultInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((data: OAuthLoginResult) => {
-        res.cookie('refreshToken', data.refreshToken, {
-          httpOnly: true,
-          secure: isProd,
-          sameSite: isProd ? 'none' : 'lax',
-          path: '/auth/refresh',
-          maxAge: 604800000, // max age should tally with refresh tokens expire time in token generation
-          //check with auth service generateAuthTokens method
-        });
+        if (data.refreshToken) {
+          //refresh token cookie only created if login success
+          res.cookie('refreshToken', data.refreshToken, {
+            httpOnly: true,
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax',
+            path: '/auth/refresh',
+            maxAge: 604800000, // max age should tally with refresh tokens expire time in token generation
+            //check with auth service generateAuthTokens method
+          });
+        }
         return { url: data.redirectUrl };
       }),
     );
