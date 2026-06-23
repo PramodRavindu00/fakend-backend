@@ -14,6 +14,7 @@ export class UserService {
         id: true,
         email: true,
         name: true,
+        avatarUrl: true,
         userProviders: {
           select: {
             provider: true,
@@ -31,6 +32,7 @@ export class UserService {
         id: true,
         email: true,
         name: true,
+        avatarUrl: true,
         userProviders: {
           select: {
             provider: true,
@@ -47,7 +49,7 @@ export class UserService {
           data: {
             email: dto.email,
             name: dto.name,
-            avatarUrl: dto.email,
+            avatarUrl: dto.avatarUrl,
           },
         });
 

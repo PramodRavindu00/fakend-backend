@@ -12,7 +12,7 @@ export class CurrentUserType {
   id: string;
   email: string;
   name: string;
-  avatarUrl?: string;
+  avatarUrl: string | null;
 }
 
 export interface OAuthLoginResult {
