@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Provider } from '@prisma/client';
@@ -94,6 +94,32 @@ export class AuthService extends AppLoggerBase {
 
   getLoggedUser(user: CurrentUserType) {
     return user;
+  }
+
+  async refreshToken(refreshToken: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: CurrentUserType;
+  }> {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
+    try {
+      const payload = this.jwtService.verify<JwtPayload>(refreshToken);
+      const user = await this.userService.getUserById(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedException('User no longer exists');
+      }
+
+      return {
+        ...this.generateAuthTokens({ sub: user.id, email: user.email }),
+        user,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
   private async linkOAuthProvider(
