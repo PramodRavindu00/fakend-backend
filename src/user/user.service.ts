@@ -65,4 +65,8 @@ export class UserService {
       },
     );
   }
+
+  async deleteUser(id: string) {
+    await this.prisma.user.delete({ where: { id } }); //cascade delete user providers
+  }
 }
