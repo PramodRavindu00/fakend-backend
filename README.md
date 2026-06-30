@@ -4,6 +4,8 @@ API server for **Fakend** — a mock API platform that lets software teams (espe
 
 Create projects, define routes with multiple response scenarios (status codes and JSON bodies), and share links so teammates can point their apps at predictable mock responses during development and testing.
 
+> **Project status:** Fakend is still in active development. Core features (mock API gateway, full project management APIs, and more) are being built out. Expect breaking changes, incomplete endpoints, and new functionality in future releases.
+
 ## Technologies
 
 | Layer | Stack |
