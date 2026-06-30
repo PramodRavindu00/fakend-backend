@@ -4,6 +4,6 @@ import { RouteResponseService } from './route-response.service';
 
 @Module({
   controllers: [RouteResponseController],
-  providers: [RouteResponseService]
+  providers: [RouteResponseService],
 })
 export class RouteResponseModule {}
