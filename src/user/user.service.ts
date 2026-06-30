@@ -36,6 +36,7 @@ export class UserService {
         userProviders: {
           select: {
             provider: true,
+            providerUserId: true,
           },
         },
       },
