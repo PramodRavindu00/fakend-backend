@@ -75,11 +75,10 @@ describe('UserService', () => {
     });
 
     it('Returns null if not found', async () => {
-      const nonExistingEmail = 'nonexisting@user.com';
       prisma.user.findUnique.mockResolvedValue(null);
-      const result = await service.getUserByEmail(nonExistingEmail);
+      const result = await service.getUserByEmail(email);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { email: nonExistingEmail },
+        where: { email },
         select: selectQuery,
       });
       expect(result).toBeNull();
@@ -98,18 +97,17 @@ describe('UserService', () => {
     });
 
     it('Returns null if not found', async () => {
-      const nonExistingUserId = '0000';
       prisma.user.findUnique.mockResolvedValue(null);
-      const result = await service.getUserById(nonExistingUserId);
+      const result = await service.getUserById(id);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: nonExistingUserId },
+        where: { id },
         select: selectQuery,
       });
       expect(result).toBeNull();
     });
   });
 
-  describe('Create a new user', () => {
+  it('Creates user and provider inside a transaction', async () => {
     const createUserDto: CreateUserDto = {
       email: 'new@user.com',
       name: 'New User',
@@ -124,47 +122,40 @@ describe('UserService', () => {
       name: createUserDto.name,
       avatarUrl: createUserDto.avatarUrl,
     };
+    const tx = {
+      user: { create: jest.fn().mockResolvedValue(createdUser) },
+      userProvider: { create: jest.fn().mockResolvedValue({}) },
+    };
 
-    it('Creates user and provider inside a transaction', async () => {
-      const tx = {
-        user: { create: jest.fn().mockResolvedValue(createdUser) },
-        userProvider: { create: jest.fn().mockResolvedValue({}) },
-      };
+    prisma.$transaction.mockImplementation(async (callback) => callback(tx));
 
-      prisma.$transaction.mockImplementation(async (callback) =>
-        callback(tx),
-      );
+    const result = await service.createUser(createUserDto);
 
-      const result = await service.createUser(createUserDto);
-
-      expect(prisma.$transaction).toHaveBeenCalled();
-      expect(tx.user.create).toHaveBeenCalledWith({
-        data: {
-          email: createUserDto.email,
-          name: createUserDto.name,
-          avatarUrl: createUserDto.avatarUrl,
-        },
-      });
-      expect(tx.userProvider.create).toHaveBeenCalledWith({
-        data: {
-          userId: createdUser.id,
-          provider: createUserDto.provider,
-          providerUserId: createUserDto.providerUserId,
-        },
-      });
-      expect(result).toEqual(createdUser);
+    expect(prisma.$transaction).toHaveBeenCalled();
+    expect(tx.user.create).toHaveBeenCalledWith({
+      data: {
+        email: createUserDto.email,
+        name: createUserDto.name,
+        avatarUrl: createUserDto.avatarUrl,
+      },
     });
+    expect(tx.userProvider.create).toHaveBeenCalledWith({
+      data: {
+        userId: createdUser.id,
+        provider: createUserDto.provider,
+        providerUserId: createUserDto.providerUserId,
+      },
+    });
+    expect(result).toEqual(createdUser);
   });
 
-  describe('Delete a user by Id', () => {
-    it('Deletes the user', async () => {
-      prisma.user.delete.mockResolvedValue(mockUser);
+  it('Deletes the user', async () => {
+    prisma.user.delete.mockResolvedValue(mockUser);
 
-      await service.deleteUser(id);
+    await service.deleteUser(id);
 
-      expect(prisma.user.delete).toHaveBeenCalledWith({
-        where: { id },
-      });
+    expect(prisma.user.delete).toHaveBeenCalledWith({
+      where: { id },
     });
   });
 });
