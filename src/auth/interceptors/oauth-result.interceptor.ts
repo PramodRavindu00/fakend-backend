@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { map, Observable } from 'rxjs';
 import { Response } from 'express';
-import { OAuthLoginResult } from '../constants/constants';
+import { OAuthLoginResult } from 'src/common/constants/constants';
 
 @Injectable()
 export class OAuthResultInterceptor implements NestInterceptor {

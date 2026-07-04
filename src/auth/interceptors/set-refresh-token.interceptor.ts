@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { map, Observable, tap } from 'rxjs';
-import { CurrentUserType } from '../constants/constants';
+import { CurrentUserType } from 'src/common/constants/constants';
 
 @Injectable()
 export class SetRefreshTokenCookie implements NestInterceptor {
