@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { CurrentUserType, JwtPayload } from 'src/common/constants/constants';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -30,6 +31,19 @@ describe('AuthService', () => {
     sign: jest.fn(),
   };
 
+  //test data
+  const payload: JwtPayload = {
+    sub: 'user-123',
+    email: 'test@example.com',
+  };
+
+  const mockUser:CurrentUserType = {
+    id: 'user-123',
+    email: 'test@example.com',
+    name: 'Test User',
+    avatarUrl: 'avatar.jpg',
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
@@ -43,5 +57,9 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+  });
+
+  it('Should returns the logged in user', () => {
+    expect(service.getLoggedUser(mockUser)).toEqual(mockUser);
   });
 });
